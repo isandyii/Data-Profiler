@@ -941,7 +941,7 @@ def about():
             opacity:0.65;
             margin-bottom:20px;
         ">
-            From raw CSV to complete data-quality insights
+            From raw dataset to complete data-quality insights
         </div>
     </div>
     """)
@@ -1195,13 +1195,8 @@ def about():
         Possible future improvements include:
 
         - Automated anomaly detection
-        - Advanced outlier profiling
         - ML-readiness score
-        - Automated recommendations
-        - Advanced Seaborn visualizations
         - PDF report generation
-        - Additional file formats
-        - Automated profiling reports
         """)
 
 
@@ -1222,10 +1217,11 @@ def about():
         ("🐼", "Pandas"),
         ("🔢", "NumPy"),
         ("📊", "Matplotlib"),
+        ("📈","Seaborn")
     ]
 
 
-    cols = st.columns(5)
+    cols = st.columns(6)
 
     for col, (icon, name) in zip(cols, technologies):
 

@@ -2,6 +2,8 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 def visualization(df):
 
@@ -42,7 +44,8 @@ def visualization(df):
                 bins=int(st.number_input("Enter bins",min_value=1,value=10))
 
                 fig, ax = plt.subplots()
-                ax.hist(df[select_col],bins=bins,color="#f0fc0d",edgecolor="black",label=select_col)
+                # ax.hist(df[select_col],bins=bins,color="#f0fc0d",edgecolor="black",label=select_col)
+                sns.histplot(df[select_col],bins=bins,color="#22739c",kde=True,label=select_col)
                 ax.legend()
                 ax.set_title(title)
                 ax.set_xlabel(select_col)
@@ -61,7 +64,7 @@ def visualization(df):
                 category=st.selectbox("Select X Axis Column",df.columns,key="bar x axis")
                 numeric=st.selectbox("Select Y Axis Column",numeric_cols,key="bar y axis")
 
-                st.bar_chart(df,x=category,y=numeric,color="#8e45d6",height=500)
+                st.bar_chart(df,x=category,y=numeric,color="#00FBC5",height=500)
 
         #Line Chart
         if "Line Chart" in selected_charts:
@@ -89,7 +92,8 @@ def visualization(df):
                 data=st.selectbox("Select Column",numeric_cols,key="box plot")
 
                 fig,ax=plt.subplots()
-                ax.boxplot(df[data])
+                # ax.boxplot(df[data])
+                sns.boxplot(df[data],color="#00A2FF")
                 st.pyplot(fig)
 
         #Scatter Plot

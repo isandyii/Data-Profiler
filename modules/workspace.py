@@ -9,57 +9,55 @@ from modules import report as rt
 from modules import about as abt
 
 def workspace():
-    st.title("CSV Data Profiler 📊")
-    data=st.file_uploader("Select and upload your CSV file here:",type=["csv"])
+    st.title("Data Profiler 📊")
+    data=st.file_uploader("Select and upload your dataset file here:",type=["csv","xlsx"])
+
 
     if data:
         try:
-            if "original_df" not in st.session_state:
-                st.session_state.original_df=pd.read_csv(data)
-                st.session_state.df=st.session_state.original_df.copy()
-            df=st.session_state.df
+            if data.name.split(".")[-1]=="csv":
 
-            st.success("File Uploaded Succsessfully")
+                    if "original_df" not in st.session_state:
+                        st.session_state.original_df=pd.read_csv(data)
+                        st.session_state.df=st.session_state.original_df.copy()
+                    df=st.session_state.df
 
-            tab1,tab2,tab3,tab4,tab5,tab6,tab7=st.tabs([ "📂 Dataset Overview",
-                                                    "📋 Summary",
-                                                    "🧹 Cleaning",
-                                                    "📊 Statistics",
-                                                    "📈 Visualization",
-                                                    "📄 Report",
-                                                    "ℹ️ About"])
-            
-            with tab1:
-                 dp.data_previwe(data,df)
+                    st.success("File Uploaded Succsessfully")
 
-            with tab2:
-                summ.summery(df)
+            if data.name.split(".")[-1]=="xlsx":
 
-            with tab3:
-                cln.clean_operation(df)
+                    if "original_df" not in st.session_state:
+                        st.session_state.original_df=pd.read_excel(data)
+                        st.session_state.df=st.session_state.original_df.copy()
+                    df=st.session_state.df
 
-            with tab4:
-                stc.statestics(df)
+                    st.success("File Uploaded Succsessfully")
+                    
 
-            with tab5:
-                vis.visualization(df)
-
-            with tab6:
-                rt.data_report(data,df)
-
-            with tab7:
-                abt.about()
-
-            
-
-
-
-                
-                
-            
         except Exception as e:
-            st.error(e)    
-            # st.error("File Not readablbe! make sure file is CSV")    
+                    st.error(e)    
+                    # st.error("File Not readablbe! make sure file is CSV AND")    
 
+        tab1,tab2,tab3,tab4,tab5,tab6,tab7=st.tabs([ "📂 Dataset Overview",
+                                                "📋 Summary",
+                                                "🧹 Cleaning",
+                                                "📊 Statistics",
+                                                "📈 Visualization",
+                                                "📄 Report",
+                                                "ℹ️ About"])
+        with tab1:
+             dp.data_previwe(data,df)
+        with tab2:
+            summ.summery(df)
+        with tab3:
+            cln.clean_operation(df)
+        with tab4:
+            stc.statestics(df)
+        with tab5:
+            vis.visualization(df)
+        with tab6:
+            rt.data_report(data,df)
+        with tab7:
+            abt.about()
     else :
         st.error("Upload The File First")

@@ -14,11 +14,13 @@ def clean_operation(df):
         )
 
     #Missing data
-    #Replace Missing values
+
+    #Replace Missing values with agg function
+
     if df.isna().sum().sum()>0:
 
-         with st.expander("Replace Missing Value",width=650):
-            replace_value=st.text_input("Replace None with:")
+         with st.expander("Replace Missing Values",width=650):
+            replace_value=st.text_input("Replace All None with:")
 
             if replace_value:
                 st.write(f"Replace All :red[None] with :green[{replace_value}] are you sure ?")
@@ -27,6 +29,36 @@ def clean_operation(df):
                     st.session_state.df=st.session_state.df.fillna(replace_value)
                     st.success("Values Replaced Successfully",icon="✅")
                     st.rerun()
+
+            st.write("Aggregate Function For Numerical Columns")
+
+            numeric_columns=[i for i in df.columns if df[i].dtypes in ["int32","int64","float32","float64"] ]
+
+            selected_col=st.selectbox("Select Column",numeric_columns)
+
+            if selected_col and df[selected_col].isna().sum()>0:
+
+                if st.button(":green[Replace With Avarage]",type="secondary",key="replace_missing_mean"):
+                    st.session_state.df[selected_col]=st.session_state.df[selected_col].fillna(df[selected_col].mean())
+                    st.rerun()
+
+                if st.button(":green[Replace With Minimum]",type="secondary",key="replace_missing_min"):
+                    st.session_state.df[selected_col]=st.session_state.df[selected_col].fillna(df[selected_col].min())
+                    st.rerun()
+
+                if st.button(":green[Replace With Maximum]",type="secondary",key="replace_missing_max"):
+                    st.session_state.df[selected_col]=st.session_state.df[selected_col].fillna(df[selected_col].max())
+                    st.rerun()
+
+                if st.button(":green[Replace With Median]",type="secondary",key="replace_missing_median"):
+                    st.session_state.df[selected_col]=st.session_state.df[selected_col].fillna(df[selected_col].median())
+                    st.rerun()
+
+            else:
+
+                st.write(f"There Is No Missing Valuses in {selected_col} Columns")
+            
+            
 
     # Drop Missing values
     if df.isna().sum().sum()>0:        
@@ -61,8 +93,12 @@ def clean_operation(df):
             if df.T.duplicated().T.sum()>0:
 
                 st.write("Total Duplicated Columns:",df.T.duplicated().T.sum())
+
                 if st.button("Delete Duplicates",type="primary",key="delete_duplicate_columns"):
-                    st.session_state.df=st.session_state.df.T.drop_duplicates().T
+
+                    duplicate_columns = df.T.duplicated()
+
+                    st.session_state.df = df.loc[:, ~duplicate_columns]
                     st.success("Duplicated Rows Deleted Successfully",icon="✅")
                     st.rerun()
                 
@@ -116,14 +152,14 @@ def clean_operation(df):
                     st.success("Data type converted")
                     st.rerun()
 
-            #if object
-            elif (str(current_dtype) =="object") and (num_converted.notna().all()) and (len(unique_val)!=2):
+            #if object or str or string
+            elif (str(current_dtype) in ["object","str","string"]) and (num_converted.notna().all()) and (len(unique_val)!=2):
                 st.success("DataType Suggest : int64")
                 selected_dtype=st.selectbox("Available Datatype",["int64","float64"])
 
                 st.write(f":red[{current_dtype}] TO :green[{selected_dtype}]")
 
-                if st.button("Change",key="change_object"): 
+                if st.button("Change",key="change_object_str"): 
 
                     if selected_dtype == "int64":
 
@@ -185,6 +221,14 @@ def clean_operation(df):
                     st.success("Data type converted")
                     st.rerun()
 
+    #Advanced edit option
+
+    if st.toggle("Edit a specific values"):
+        edited_df=st.data_editor(st.session_state.df)
+
+        if st.button(":green[Apply Changes]"):
+            st.session_state.df=edited_df
+            st.rerun()
 
     if st.toggle("See Changes"):
         st.dataframe(df.astype(str),width="stretch")
