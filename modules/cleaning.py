@@ -173,7 +173,7 @@ def clean_operation(df):
 
             # to bool
             elif (
-                (str(current_dtype) in ["int64","float64","object"])
+                (str(current_dtype) in ["int64","float64","object","str","string"])
                 and (len(unique_val)==2)
                 and (unique_val.issubset({0,1}))
                 ):
@@ -191,7 +191,7 @@ def clean_operation(df):
 
                     st.warning("Make sure the selected datatype is compatible with the column values.")
                     
-            elif (str(current_dtype)=="object") and (len(df[selected_col].unique()) < len(df[selected_col])/2):
+            elif (str(current_dtype)in ["int64","float64","object","str","string"]) and (len(df[selected_col].unique()) < len(df[selected_col])/2):
                 st.success("DataType Suggest : catagory")
                 selected_dtype=st.selectbox("Available Datatype",["category","object"])
                 st.write(f":red[{current_dtype}] TO :green[{selected_dtype}]")
@@ -200,7 +200,7 @@ def clean_operation(df):
                     st.success("Data type converted")
                     st.rerun()
 
-            elif (str(current_dtype)=="object") and (converted.notna().all()):
+            elif (str(current_dtype) in ["int64","float64","object","str","string"]) and (converted.notna().all()):
 
                 st.success("DataType Suggest : datetime")
                 st.write(f":red[{current_dtype}] TO :green[datetime]")
